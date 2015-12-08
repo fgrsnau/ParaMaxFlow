@@ -42,8 +42,8 @@ import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import loci.formats.gui.ExtensionFileFilter;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.converter.Converters;
 import net.imglib2.img.ImagePlusAdapter;
@@ -717,7 +717,7 @@ public class ParaMaxFlowPanel extends JPanel implements ActionListener, ChangeLi
 	 */
 	public void actionSaveCostFunctions() {
 		final JFileChooser fc = new JFileChooser( DEFAULT_PATH );
-		fc.addChoosableFileFilter( new ExtensionFileFilter( new String[] { "jug", "JUG" }, "JUG-cost-function-file" ) );
+		fc.addChoosableFileFilter( new FileNameExtensionFilter( "JUG-cost-function-file", "jug", "JUG" ) );
 
 		if ( fc.showSaveDialog( this.getTopLevelAncestor() ) == JFileChooser.APPROVE_OPTION ) {
 			File file = fc.getSelectedFile();
@@ -743,7 +743,7 @@ public class ParaMaxFlowPanel extends JPanel implements ActionListener, ChangeLi
 	 */
 	public void actionLoadCostFunction() {
 		final JFileChooser fc = new JFileChooser( DEFAULT_PATH );
-		fc.addChoosableFileFilter( new ExtensionFileFilter( new String[] { "jug", "JUG" }, "JUG-cost-function-file" ) );
+		fc.addChoosableFileFilter( new FileNameExtensionFilter( "JUG-cost-function-file", "jug", "JUG" ) );
 
 		if ( fc.showOpenDialog( this.getTopLevelAncestor() ) == JFileChooser.APPROVE_OPTION ) {
 			final File file = fc.getSelectedFile();
@@ -808,7 +808,7 @@ public class ParaMaxFlowPanel extends JPanel implements ActionListener, ChangeLi
 	 */
 	private void actionLoadCostModulationClassifier() {
 		final JFileChooser fc = new JFileChooser( DEFAULT_PATH );
-		fc.addChoosableFileFilter( new ExtensionFileFilter( new String[] { "model", "MODEL" }, "weka-model-file" ) );
+		fc.addChoosableFileFilter( new FileNameExtensionFilter( "JUG-cost-function-file", "jug", "JUG" ) );
 
 		if ( fc.showOpenDialog( guiFrame ) == JFileChooser.APPROVE_OPTION ) {
 			final File file = fc.getSelectedFile();
@@ -823,7 +823,7 @@ public class ParaMaxFlowPanel extends JPanel implements ActionListener, ChangeLi
 	 */
 	private void actionLoadUnaryCostClassifier() {
 		final JFileChooser fc = new JFileChooser( DEFAULT_PATH );
-		fc.addChoosableFileFilter( new ExtensionFileFilter( new String[] { "model", "MODEL" }, "weka-model-file" ) );
+		fc.addChoosableFileFilter( new FileNameExtensionFilter( "JUG-cost-function-file", "jug", "JUG" ) );
 
 		if ( fc.showOpenDialog( guiFrame ) == JFileChooser.APPROVE_OPTION ) {
 			final File file = fc.getSelectedFile();
@@ -837,7 +837,7 @@ public class ParaMaxFlowPanel extends JPanel implements ActionListener, ChangeLi
 	 */
 	private void actionLoadPairwiseCostClassifier() {
 		final JFileChooser fc = new JFileChooser( DEFAULT_PATH );
-		fc.addChoosableFileFilter( new ExtensionFileFilter( new String[] { "model", "MODEL" }, "weka-model-file" ) );
+		fc.addChoosableFileFilter( new FileNameExtensionFilter( "JUG-cost-function-file", "jug", "JUG" ) );
 
 		if ( fc.showOpenDialog( guiFrame ) == JFileChooser.APPROVE_OPTION ) {
 			final File file = fc.getSelectedFile();
