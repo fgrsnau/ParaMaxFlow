@@ -99,6 +99,43 @@
 			<groupId>InteractiveDisplay</groupId>
 			<artifactId>InteractiveDisplay</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<exclusions>
+				<!-- Mismatching dependency version, maven-enforcer-plugin is complaining.
+				     This should probably fixed upstream.
+				-->
+				<exclusion>
+					<groupId>ch.randelshofer</groupId>
+					<artifactId>quaqua</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>net.imglib2</groupId>
+					<artifactId>imglib2-algorithms</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>gov.nih.imagej</groupId>
+					<artifactId>imagej</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.code.findbugs</groupId>
+					<artifactId>bcel</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.code.findbugs</groupId>
+					<artifactId>annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>edu.ucar</groupId>
+					<artifactId>netcdf</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<!--
