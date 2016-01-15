@@ -46,13 +46,6 @@ public class ParaMaxFlow_ implements PlugIn {
 
 		// start ImageJ
 		new ImageJ();
-
-		// open the Clown sample
-		final ImagePlus image = IJ.openImage("http://imagej.net/images/clown.jpg");
-		image.show();
-
-		// run the plugin
-		IJ.runPlugIn(clazz.getName(), "");
 	}
 
 }
