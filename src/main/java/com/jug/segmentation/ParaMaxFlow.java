@@ -103,7 +103,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 	 * @param pairwisePotentialImage
 	 */
 	private void buildGraph( final double unaryCostFactor, final RandomAccessibleInterval< ? extends RealType > unaryPotentialImage, final double isingCost, final RandomAccessibleInterval< ? extends RealType > pairwisePotentialImage ) {
-		parametric.AddNode( ( int ) Views.iterable( rai ).size() ); // add as many nodes as the input image has pixels
+		parametric.addNode( ( int ) Views.iterable( rai ).size() ); // add as many nodes as the input image has pixels
 
 		//her now a trick to make <3d images also comply to the code below
 		IntervalView< T > ivImg = Views.interval( rai, rai );
@@ -140,7 +140,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 					final double likelihood = unaryCostFactor * raUnaryPotentialImage.get().getRealDouble();
 
 					pixelId = ( int ) ( z * dims[ 1 ] * dims[ 0 ] + y * dims[ 0 ] + x );
-					parametric.AddUnaryTerm( pixelId, 1.0, likelihood );
+					parametric.addUnaryTerm( pixelId, 1.0, likelihood );
 				}
 			}
 		}
@@ -165,7 +165,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 						cost += isingCost;
 
 						final long xNeighborId = pixelId + 1;
-						parametric.AddPairwiseTerm( pixelId, xNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
+						parametric.addPairwiseTerm( pixelId, xNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
 					}
 					if ( y + 1 < dims[ 1 ] ) {
 						raPairwisePotentialImage.move( 1, 1 );
@@ -176,7 +176,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 						cost += isingCost;
 
 						final long yNeighborId = pixelId + dims[ 0 ];
-						parametric.AddPairwiseTerm( pixelId, yNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
+						parametric.addPairwiseTerm( pixelId, yNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
 					}
 					// connect in z-direction ONLY if is3d==TRUE!!!
 					if ( is3d && z + 1 < dims[ 2 ] ) {
@@ -188,7 +188,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 						cost += isingCost;
 
 						final long zNeighborId = pixelId + dims[ 0 ] * dims[ 1 ];
-						parametric.AddPairwiseTerm( pixelId, zNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
+						parametric.addPairwiseTerm( pixelId, zNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
 					}
 				}
 			}
@@ -205,7 +205,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 	 */
 	private void buildGraph( final Function1D< Double > fktUnary, final double costIsing, final Function1D< Double > fktPairwiseX, final Function1D< Double > fktPairwiseY, final Function1D< Double > fktPairwiseZ, final RandomAccessibleInterval< ? extends RealType > potentialModulationImage ) {
 
-		parametric.AddNode( ( int ) Views.iterable( rai ).size() ); // add as many nodes as the input image has pixels
+		parametric.addNode( ( int ) Views.iterable( rai ).size() ); // add as many nodes as the input image has pixels
 
 		//her now a trick to make <3d images also comply to the code below
 		IntervalView< T > ivImg = Views.interval( rai, rai );
@@ -244,7 +244,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 					}
 
 					pixelId = ( int ) ( z * dims[ 1 ] * dims[ 0 ] + y * dims[ 0 ] + x );
-					parametric.AddUnaryTerm( pixelId, 1.0, likelihood );
+					parametric.addUnaryTerm( pixelId, 1.0, likelihood );
 				}
 			}
 		}
@@ -279,7 +279,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 						}
 
 						final long xNeighborId = pixelId + 1;
-						parametric.AddPairwiseTerm( pixelId, xNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
+						parametric.addPairwiseTerm( pixelId, xNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
 					}
 					if ( y + 1 < dims[ 1 ] ) {
 						raImg.move( 1, 1 );
@@ -295,7 +295,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 						}
 
 						final long yNeighborId = pixelId + dims[ 0 ];
-						parametric.AddPairwiseTerm( pixelId, yNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
+						parametric.addPairwiseTerm( pixelId, yNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
 					}
 					// connect in z-direction ONLY if is3d==TRUE!!!
 					if ( is3d && z + 1 < dims[ 2 ] ) {
@@ -312,7 +312,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 						}
 
 						final long zNeighborId = pixelId + dims[ 0 ] * dims[ 1 ];
-						parametric.AddPairwiseTerm( pixelId, zNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
+						parametric.addPairwiseTerm( pixelId, zNeighborId, 0.0, cost, cost, 0.0 ); // add term with costs E00, E01, E10, and E11,
 					}
 				}
 			}
@@ -320,7 +320,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 	}
 
 	public long solve( final double lambdaMin, final double lambdaMax ) {
-		final long solutions = parametric.Solve( lambdaMin, lambdaMax );
+		final long solutions = parametric.solve( lambdaMin, lambdaMax );
 		System.out.println( " >>>>> ParaMaxFlow solutions found: " + solutions + " <<<<<" );
 		regionsImg = createRegionsImg();
 		return solutions;
@@ -343,7 +343,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 		ivRet.dimensions( dims );
 
 		for ( long graphNodeId = 0; graphNodeId < Views.iterable( rai ).size(); graphNodeId++ ) {
-			final long numRegions = parametric.GetRegionCount( parametric.GetRegion( graphNodeId ) );
+			final long numRegions = parametric.getRegionCount( parametric.getRegion( graphNodeId ) );
 
 			final long z = graphNodeId / ( dims[ 0 ] * dims[ 1 ] );
 			final long remainder = graphNodeId - z * ( dims[ 0 ] * dims[ 1 ] );
@@ -375,7 +375,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 		final RandomAccess< BitType > raRet = ivRet.randomAccess();
 
 		for ( long graphNodeId = 0; graphNodeId < Views.iterable( rai ).size(); graphNodeId++ ) {
-			final long numRegions = parametric.GetRegionCount( parametric.GetRegion( graphNodeId ) );
+			final long numRegions = parametric.getRegionCount( parametric.getRegion( graphNodeId ) );
 
 			final long z = graphNodeId / ( dims[ 0 ] * dims[ 1 ] );
 			final long remainder = graphNodeId - z * ( dims[ 0 ] * dims[ 1 ] );
