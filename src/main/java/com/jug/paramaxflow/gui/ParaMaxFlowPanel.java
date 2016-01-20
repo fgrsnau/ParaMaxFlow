@@ -44,16 +44,29 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import ij.io.FileSaver;
+import io.scif.formats.TIFFFormat;
+import io.scif.img.ImgSaver;
+import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.converter.Converter;
 import net.imglib2.converter.Converters;
+import net.imglib2.converter.RealARGBConverter;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.Img;
+import net.imglib2.img.ImgFactory;
+import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.Type;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.LongType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.DoubleType;
+import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 
+import net.imglib2.view.Views;
 import org.jhotdraw.draw.AttributeKey;
 import org.jhotdraw.draw.BezierFigure;
 import org.jhotdraw.draw.EllipseFigure;
@@ -73,6 +86,7 @@ import com.jug.segmentation.SegmentationMagic;
 import com.jug.segmentation.SilentWekaSegmenter;
 import com.jug.util.IddeaUtil;
 import com.jug.util.converter.RealDoubleNormalizeConverter;
+import weka.Run;
 
 /**
  * @author jug
@@ -586,7 +600,14 @@ public class ParaMaxFlowPanel extends JPanel implements ActionListener, ChangeLi
 	 */
 	public void actionExportCurrentSegmentationToFiji() {
 		if ( this.imgSegmentation != null ) {
-			ImageJFunctions.show( this.imgSegmentation );
+			final RandomAccessibleInterval<FloatType> img = Converters.convert(imgSegmentation, new Converter<LongType, FloatType>() {
+				@Override
+				public void convert(LongType input, FloatType output) {
+					output.set(input.get());
+				}
+			}, new FloatType());
+
+			ImageJFunctions.show(img);
 		} else {
 			JOptionPane.showMessageDialog( this.getRootPane(), "The source image was not yet segmented sucessfully, hence there is no current segmentation!" );
 		}
@@ -597,7 +618,30 @@ public class ParaMaxFlowPanel extends JPanel implements ActionListener, ChangeLi
 	 */
 	public void actionExportSumImgToFiji() {
 		if ( this.imgSumLong != null ) {
-			ImageJFunctions.show( this.imgSumLong );
+			LongType min = imgSumLong.randomAccess().get().copy();
+			LongType max = imgSumLong.randomAccess().get().copy();
+			for (LongType lt : Views.iterable(imgSumLong)) {
+				if (lt.compareTo(min) < 0) {
+					min = lt.copy();
+				}
+				if (lt.compareTo(max) > 0) {
+					max = lt.copy();
+				}
+			}
+			System.out.println(min);
+			System.out.println(max);
+
+			final LongType minFinal = min;
+			final LongType maxFinal = max;
+
+			final RandomAccessibleInterval<FloatType> img = Converters.convert(imgSumLong, new Converter<LongType, FloatType>() {
+				@Override
+				public void convert(LongType input, FloatType output) {
+					output.set((input.get() - minFinal.get()) / (float) (maxFinal.get() - minFinal.get()));
+				}
+			}, new FloatType());
+
+			ImageJFunctions.show(img);
 		} else {
 			JOptionPane.showMessageDialog( this.getRootPane(), "The source image was not yet segmented sucessfully, hence there is no sum-img yet!" );
 		}
@@ -634,6 +678,8 @@ public class ParaMaxFlowPanel extends JPanel implements ActionListener, ChangeLi
 			this.sliderSegmentation.setValue( ( int ) this.numSols / 2 );
 
 			this.tabsViews.setSelectedIndex( 2 );
+
+			store();
 		}
 	}
 
@@ -897,5 +943,53 @@ public class ParaMaxFlowPanel extends JPanel implements ActionListener, ChangeLi
 
 		guiFrame.add( main );
 		guiFrame.setVisible( true );
+	}
+
+	private void store() {
+		final String base = "/home/build/out/";
+
+		if (imgSumLong != null) {
+			LongType min = imgSumLong.randomAccess().get().copy();
+			LongType max = imgSumLong.randomAccess().get().copy();
+			for (LongType lt : Views.iterable(imgSumLong)) {
+				if (lt.compareTo(min) < 0) {
+					min = lt.copy();
+				}
+				if (lt.compareTo(max) > 0) {
+					max = lt.copy();
+				}
+			}
+			System.out.println(min);
+			System.out.println(max);
+
+			final LongType minFinal = min;
+			final LongType maxFinal = max;
+
+			final RandomAccessibleInterval<FloatType> img = Converters.convert(imgSumLong, new Converter<LongType, FloatType>() {
+				@Override
+				public void convert(LongType input, FloatType output) {
+					output.set((input.get() - minFinal.get()) / (float) (maxFinal.get() - minFinal.get()));
+				}
+			}, new FloatType());
+
+			ImagePlus test = ImageJFunctions.wrap(img, "Test");
+			FileSaver saver = new FileSaver(test);
+			saver.saveAsPng(base + "sum.png");
+		}
+
+		for (int i = 0; i < numSols; ++i) {
+			RandomAccessibleInterval<LongType> source = SegmentationMagic.returnSegmentation(imgSumLong, i);
+
+			final RandomAccessibleInterval<FloatType> img = Converters.convert(source, new Converter<LongType, FloatType>() {
+				@Override
+				public void convert(LongType input, FloatType output) {
+					output.set(input.get());
+				}
+			}, new FloatType());
+
+			ImagePlus test = ImageJFunctions.wrap(img, "Test");
+			FileSaver saver = new FileSaver(test);
+			saver.saveAsPng(String.format("%ssegmentation_%05d.png", base, i));
+		}
 	}
 }

@@ -3,26 +3,27 @@
  */
 package com.jug.segmentation;
 
+import com.fgrsnau.diversity.ParametricDiversityWrapper3;
+import com.jug.fkt.Function1D;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.array.ArrayImgFactory;
-import net.imglib2.paramaxflow.Parametric;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.LongType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
 
-import com.jug.fkt.Function1D;
+import java.util.List;
 
 /**
  * @author jug
  */
 public class ParaMaxFlow< T extends RealType< T > > {
 
-	Parametric parametric;
+	ParametricDiversityWrapper3 parametric;
 
 	private final RandomAccessibleInterval< T > rai;
 	private Img< LongType > regionsImg;
@@ -60,7 +61,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 
 		this.is3d = is3d;
 
-		parametric = new Parametric( ( int ) Views.iterable( rai ).size(), ( int ) ( Views.iterable( rai ).size() * rai.numDimensions() ) );
+		parametric = new ParametricDiversityWrapper3( ( int ) Views.iterable( rai ).size(), ( int ) ( Views.iterable( rai ).size() * rai.numDimensions() ) );
 		buildGraph( fktUnary, costIsing, fktPairwiseX, fktPairwiseY, fktPairwiseZ, potentialModulationImage );
 	}
 
@@ -92,7 +93,7 @@ public class ParaMaxFlow< T extends RealType< T > > {
 
 		this.is3d = is3d;
 
-		parametric = new Parametric( ( int ) Views.iterable( rai ).size(), ( int ) ( Views.iterable( rai ).size() * rai.numDimensions() ) );
+		parametric = new ParametricDiversityWrapper3( ( int ) Views.iterable( rai ).size(), ( int ) ( Views.iterable( rai ).size() * rai.numDimensions() ) );
 		buildGraph( unaryCostFactor, unaryPotentialImage, isingCost, pairwisePotentialImage );
 	}
 
@@ -320,13 +321,13 @@ public class ParaMaxFlow< T extends RealType< T > > {
 	}
 
 	public long solve( final double lambdaMin, final double lambdaMax ) {
-		final long solutions = parametric.solve( lambdaMin, lambdaMax );
-		System.out.println( " >>>>> ParaMaxFlow solutions found: " + solutions + " <<<<<" );
-		regionsImg = createRegionsImg();
-		return solutions;
+		final List<boolean[]> solutions = parametric.solve( lambdaMin, lambdaMax );
+		System.out.println( " >>>>> ParaMaxFlow solutions found: " + solutions.size() + " <<<<<" );
+		regionsImg = createRegionsImg(solutions);
+		return solutions.size();
 	}
 
-	private Img< LongType > createRegionsImg() {
+	private Img< LongType > createRegionsImg(List<boolean[]> solutions) {
 		long[] dims = new long[ rai.numDimensions() ];
 		rai.dimensions( dims );
 		final ImgFactory< LongType > imgFactory = new ArrayImgFactory< LongType >();
@@ -343,7 +344,14 @@ public class ParaMaxFlow< T extends RealType< T > > {
 		ivRet.dimensions( dims );
 
 		for ( int graphNodeId = 0; graphNodeId < Views.iterable( rai ).size(); graphNodeId++ ) {
-			final long numRegions = parametric.getRegionCount( parametric.getRegion( graphNodeId ) );
+			// final long numRegions = parametric.getRegionCount( parametric.getRegion( graphNodeId ) );
+			int numRegions = 0;
+			for (int i = 0; i < solutions.size(); ++i) {
+				if (!solutions.get(i)[graphNodeId]) {
+					numRegions = i;
+					break;
+				}
+			}
 
 			final long z = graphNodeId / ( dims[ 0 ] * dims[ 1 ] );
 			final long remainder = graphNodeId - z * ( dims[ 0 ] * dims[ 1 ] );
@@ -375,7 +383,8 @@ public class ParaMaxFlow< T extends RealType< T > > {
 		final RandomAccess< BitType > raRet = ivRet.randomAccess();
 
 		for ( int graphNodeId = 0; graphNodeId < Views.iterable( rai ).size(); graphNodeId++ ) {
-			final long numRegions = parametric.getRegionCount( parametric.getRegion( graphNodeId ) );
+			// final long numRegions = parametric.getRegionCount( parametric.getRegion( graphNodeId ) );
+			final long numRegions = 0;
 
 			final long z = graphNodeId / ( dims[ 0 ] * dims[ 1 ] );
 			final long remainder = graphNodeId - z * ( dims[ 0 ] * dims[ 1 ] );
