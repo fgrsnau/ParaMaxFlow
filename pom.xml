@@ -21,6 +21,7 @@
 	<properties>
 		<scijava.jvm.version>1.7</scijava.jvm.version>
 		<paramaxflow-jni.version>1.0.0-SNAPSHOT</paramaxflow-jni.version>
+		<maxflow-jni.version>1.0-SNAPSHOT</maxflow-jni.version>
 	</properties>
 
 	<developers>
@@ -148,6 +149,17 @@
 			<version>${paramaxflow-jni.version}</version>
 			<type>nar</type>
 		</dependency>
+		<dependency>
+			<!--
+				download and install pom from:
+
+				https://github.com/fgrsnau/maxflow-jni
+			-->
+			<groupId>com.github.fgrsnau</groupId>
+			<artifactId>maxflow-jni</artifactId>
+			<version>${maxflow-jni.version}</version>
+			<type>nar</type>
+		</dependency>
 
 		<!--
 			Runtime dependencies (copied by maven-dependency-plugin, contains native libraries).
@@ -199,6 +211,55 @@
 			<groupId>net.imglib2</groupId>
 			<artifactId>paramaxflow-jni</artifactId>
 			<version>${paramaxflow-jni.version}</version>
+			<classifier>x86_64-MacOSX-gpp-jni</classifier>
+			<scope>runtime</scope>
+			<type>nar</type>
+		</dependency>
+		<!-- Another one -->
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>maxflow-jni</artifactId>
+			<version>${maxflow-jni.version}</version>
+			<classifier>i386-Linux-gpp-jni</classifier>
+			<scope>runtime</scope>
+			<type>nar</type>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>maxflow-jni</artifactId>
+			<version>${maxflow-jni.version}</version>
+			<classifier>amd64-Linux-gpp-jni</classifier>
+			<scope>runtime</scope>
+			<type>nar</type>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>maxflow-jni</artifactId>
+			<version>${maxflow-jni.version}</version>
+			<classifier>x86-Windows-gpp-jni</classifier>
+			<scope>runtime</scope>
+			<type>nar</type>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>maxflow-jni</artifactId>
+			<version>${maxflow-jni.version}</version>
+			<classifier>amd64-Windows-gpp-jni</classifier>
+			<scope>runtime</scope>
+			<type>nar</type>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>maxflow-jni</artifactId>
+			<version>${maxflow-jni.version}</version>
+			<classifier>ppc-MacOSX-gpp-jni</classifier>
+			<scope>runtime</scope>
+			<type>nar</type>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>maxflow-jni</artifactId>
+			<version>${maxflow-jni.version}</version>
 			<classifier>x86_64-MacOSX-gpp-jni</classifier>
 			<scope>runtime</scope>
 			<type>nar</type>
